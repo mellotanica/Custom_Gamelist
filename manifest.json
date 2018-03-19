@@ -11,6 +11,18 @@
 		"open_in_tab" : true
 	},
 	"permissions": [
-		"storage"
+		"storage",
+		"<all_urls>"
+	],
+	"content_scripts": [
+		{
+			"matches": [
+				"*://store.steampowered.com/*"
+			],
+			"js": [
+				"js/jQuery.min.js",
+				"customgamelist.js"
+			]
+		}
 	]
 }
