@@ -7,7 +7,7 @@
 		"64": "icon.png"
 	},
 	"options_ui": {
-		"page": "config.html",
+		"page": "options.html",
 		"open_in_tab" : true
 	},
 	"permissions": [
@@ -21,7 +21,12 @@
 			],
 			"js": [
 				"js/jQuery.min.js",
+				"js/jquery.hotkeys.js",
+				"js/storage.js",
 				"customgamelist.js"
+			],
+			"css": [
+				"css/customgamelist.css"
 			]
 		}
 	]

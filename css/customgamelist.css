@@ -1,0 +1,18 @@
+.review_buttons_area {
+	position: fixed;
+	bottom: 0;
+	z-index: 1000;
+	overflow: hidden;
+	width: 100%;
+	margin: 2%;
+	border: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
+.review_button {
+	position: relative;
+}
+.right {
+	position: absolute;
+	right: 4%;
+}
