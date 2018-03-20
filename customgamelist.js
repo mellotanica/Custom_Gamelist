@@ -12,6 +12,22 @@ function get_gameinfo(scraperAddr, appid, callback) {
 	});
 }
 
+function addToWishlist(scraperAddr, game) {
+	if($("#add_to_wishlist_area").length > 0) {
+		$("#add_to_wishlist_area").attrchange({
+			trackValues: false,
+			callback: function (e) {
+				if (e.attributeName == "style") {
+					apiNext(scraperAddr, game);
+				}
+			}
+		});
+		$("#add_to_wishlist_area > a")[0].click();
+	} else {
+		window.location.assign("https://store.steampowered.com/login/?redir="+game.gid);
+	}
+}
+
 function instrumentPage(scraperAddr, gameinfo) {
 	var html = "<div class='review_buttons_area'><a class='btnv6_blue_hoverfade btn_medium review_button left' id='review_button_wishlist'><span>Wishlist</span></a><a class='btnv6_blue_hoverfade btn_medium review_button right' id='review_button_next' align='right'><span>Next</span></a></div>";
 	$("body").append(html);
@@ -19,7 +35,7 @@ function instrumentPage(scraperAddr, gameinfo) {
 		apiNext(scraperAddr, gameinfo);
 	});
 	$("#review_button_wishlist").on("click", function() {
-		apiWishlist(scraperAddr, gameinfo);
+		addToWishlist(scraperAddr, gameinfo);
 	});
 	getNextShortcut(function(shortcut) {
 		$(document).on('keydown', null, shortcut, function() {

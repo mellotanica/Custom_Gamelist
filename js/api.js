@@ -33,45 +33,57 @@ function apiPostRequest(url, data, callback, error) {
 	});
 }
 
-function apiNext(scraperAddr, prevGame, successCb, failCb) {
-	if (successCb) {
-		success = successCb;
-	} else {
-		success = function(result) {
-			window.location.assign(result.link);
+function apiCheckAndLoadPage(scraperAddr, game, loadPageFn){
+	var notFound = function() {
+		alert("unable to load game: "+game.name+" ("+game.gid+")\nchecking next game");
+		apiDoubt(scraperAddr, game, loadPageFn);
+	};
+
+	$.ajax(game.link, {
+		type: "GET",
+		crossDomain: true,
+		success: function(data, statusText, hdr) {
+			if(hdr.status < 200 || hdr.status >= 300){
+				notFound();
+			} else {
+				loadPageFn(game.link);
+			}
+		},
+		error: notFound,
+		statusCode: {
+			302: notFound
+		}
+	});
+}
+
+function apiSendAndLoad(scraperAddr, game, endpoint, loadPageFn) {
+	if (!loadPageFn) {
+		loadPageFn = function(addr) {
+			window.location.assign(addr);
 		};
 	}
-	if (failCb) {
-		fail = failCb;
-	} else {
-		fail = function(result) {
-			window.location.assign("http://store.steampowered.com/");
-		};
-	}
-	if (prevGame) {
+	var success = function(result) {
+		apiCheckAndLoadPage(scraperAddr, result, loadPageFn);
+	};
+	var fail = function() {
+		loadPageFn("http://store.steampowered.com/");
+	};
+	if (game) {
 		var data = {
-			gid: prevGame.gid,
-			name: prevGame.name
+			gid: game.gid,
+			name: game.name
 		};
-		apiPostRequest(scraperAddr+"/checkGet", data, success, fail);
+		apiPostRequest(scraperAddr+"/"+endpoint, data, success, fail);
 	} else {
 		apiGetRequest(scraperAddr+"/getItem", success, fail);
 	}
 }
 
-function apiWishlist(scraperAddr, game) {
-	if($("#add_to_wishlist_area").length > 0) {
-		$("#add_to_wishlist_area").attrchange({
-			trackValues: false,
-			callback: function (e) {
-				if (e.attributeName == "style") {
-					apiNext(scraperAddr, game);
-				}
-			}
-		});
-		$("#add_to_wishlist_area > a")[0].click();
-	} else {
-		window.location.assign("https://store.steampowered.com/login/?redir="+game.gid);
-	}
+function apiDoubt(scraperAddr, game, loadPageFn) {
+	apiSendAndLoad(scraperAddr, game, "doubt", loadPageFn);
+}
+
+function apiNext(scraperAddr, game, loadPageFn) {
+	apiSendAndLoad(scraperAddr, game, "checkGet", loadPageFn);
 }
 

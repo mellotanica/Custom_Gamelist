@@ -1,4 +1,4 @@
-function change_page(addr) {
+function loadPage(addr) {
 	chrome.tabs.query(
 		{ currentWindow: true, active : true },
 		function(tabArray){
@@ -10,16 +10,8 @@ function change_page(addr) {
 	window.location.assign(addr);
 }
 
-function success(result) {
-	change_page(result.link);
-}
-
-function fail() {
-	change_page("http://store.steampowered.com/");
-}
-
 chrome.browserAction.onClicked.addListener(function() {
 	getScraperAddress(function(scraperAddr) {
-		apiNext(scraperAddr, null, success, fail);
+		apiNext(scraperAddr, null, loadPage);
 	});	
 });
