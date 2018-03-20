@@ -22,6 +22,7 @@
 			"js": [
 				"js/jQuery.min.js",
 				"js/jquery.hotkeys.js",
+				"js/attrchange.js",
 				"js/storage.js",
 				"customgamelist.js"
 			],

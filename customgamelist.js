@@ -38,12 +38,29 @@ function get_gameinfo(scraperAddr, appid, callback) {
 }
 
 function apiNext(scraperAddr, prevGame) {
-	alert("next: "+prevGame.name);
+	var data = {
+		gid: prevGame.gid,
+		name: prevGame.name
+	};
+	apiPostRequest(scraperAddr+"/checkGet", data, function(result) {
+		window.location.assign(result.link);
+	});
 }
 
 function apiWishlist(scraperAddr, game) {
-	alert("wish: "+game.name);
-	apiNext(scraperAddr, game);
+	if($("#add_to_wishlist_area").length > 0) {
+		$("#add_to_wishlist_area").attrchange({
+			trackValues: false,
+			callback: function (e) {
+				if (e.attributeName == "style") {
+					apiNext(scraperAddr, game);
+				}
+			}
+		});
+		$("#add_to_wishlist_area > a")[0].click();
+	} else {
+		window.location.assign("https://store.steampowered.com/login/?redir="+game.gid);
+	}
 }
 
 function instrumentPage(scraperAddr, gameinfo) {
