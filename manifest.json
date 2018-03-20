@@ -7,13 +7,18 @@
 		"64": "icon.png"
 	},
 	"options_ui": {
+		"chrome_style": true,
 		"page": "options.html",
 		"open_in_tab" : true
 	},
 	"permissions": [
 		"storage",
-		"<all_urls>"
+		"<all_urls>",
+		"activeTab"
 	],
+	"browser_action": {
+		"default_icon": { "64": "icon.png" }
+	},
 	"content_scripts": [
 		{
 			"matches": [
@@ -24,11 +29,20 @@
 				"js/jquery.hotkeys.js",
 				"js/attrchange.js",
 				"js/storage.js",
+				"js/api.js",
 				"customgamelist.js"
 			],
 			"css": [
 				"css/customgamelist.css"
 			]
 		}
-	]
+	],
+	"background": {
+		"scripts": [
+			"js/jQuery.min.js",
+			"js/api.js",
+			"js/storage.js",
+			"browseraction.js"
+		]
+	}
 }
