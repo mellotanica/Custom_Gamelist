@@ -49,18 +49,24 @@ function apiCheckAndLoadPage(scraperAddr, game, loadPageFn){
 		notFound(scraperAddr, game, loadPageFn);
 	};
 
-	$.ajax(game.link, {
-		type: "GET",
-		crossDomain: true,
-		success: function(data, statusText, hdr) {
-			if(hdr.responseURL != game.link){
-				fail();
-			} else {
-				loadPageFn(game.link);
-			}
-		},
-		error: fail
-	});
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", game.link, true);
+	xhr.onload = function() {
+		if (xhr.status >= 200 && 
+			xhr.status < 300 && 
+			xhr.responseURL &&
+			(
+				xhr.responseURL == game.link || 
+				xhr.responseURL.includes(game.gid)
+			)
+		) {
+			loadPageFn(game.link);
+			return;
+		}
+		console.log("unable to load url: "+game.link+"\ngot: "+xhr.responseURL);
+		fail();
+	}
+	xhr.send();
 }
 
 function apiSendAndLoad(scraperAddr, game, endpoint, loadPageFn) {
