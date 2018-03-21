@@ -33,26 +33,33 @@ function apiPostRequest(url, data, callback, error) {
 	});
 }
 
-function apiCheckAndLoadPage(scraperAddr, game, loadPageFn){
-	var notFound = function() {
-		alert("unable to load game: "+game.name+" ("+game.gid+")\nchecking next game");
+function notFound(scraperAddr, game, loadPageFn) {
+	var confText = "unable to load game: \""+game.name+"\" ("+game.gid+")\n"+
+		"click Ok to manually serach the game,\n"+
+		"Cancel to check next game";
+	if(confirm(confText)){
+		loadPageFn("http://store.steampowered.com/search/?term="+encodeURI(game.name));
+	} else {
 		apiDoubt(scraperAddr, game, loadPageFn);
+	}
+}
+
+function apiCheckAndLoadPage(scraperAddr, game, loadPageFn){
+	var fail = function() {
+		notFound(scraperAddr, game, loadPageFn);
 	};
 
 	$.ajax(game.link, {
 		type: "GET",
 		crossDomain: true,
 		success: function(data, statusText, hdr) {
-			if(hdr.status < 200 || hdr.status >= 300){
-				notFound();
+			if(hdr.responseURL != game.link){
+				fail();
 			} else {
 				loadPageFn(game.link);
 			}
 		},
-		error: notFound,
-		statusCode: {
-			302: notFound
-		}
+		error: fail
 	});
 }
 
